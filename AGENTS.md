@@ -24,3 +24,4 @@ This project exists for the user to LEARN — not to have code written for them.
 - Raw SQL with Postgres (no ORM): SELECT, INSERT, migrations, schema design
 - Mobile dev with Expo: camera, share extensions, fetch/multipart uploads
 - Hono: routing, middleware, file uploads, JSON responses
+- Monorepo (expo frontend + hono backend) with Bun Workspaces with RPC for type safety
