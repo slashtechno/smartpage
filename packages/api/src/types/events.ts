@@ -1,10 +1,16 @@
-export type DbEvent = {
-  id: number,
-  name: string,
-  starts_at: Date,
-  ends_at: Date
-  location: string //{x: number, y: number}
-};
+import * as z from 'zod'
 
-// https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys
-export type DbEventInsert = Omit<DbEvent, "id">;
+export const DbEventInsertSchema = z.object({
+  name: z.string(),
+  starts_at: z.coerce.date(),
+  ends_at: z.coerce.date().optional(),
+  location: z.string().optional(),
+});
+
+export type DbEventInsert = z.infer<typeof DbEventInsertSchema>;
+
+// https://www.typescriptlang.org/docs/handbook/utility-types.html
+export type DbEvent = DbEventInsert & {
+  id: number,
+  created_at: Date
+};

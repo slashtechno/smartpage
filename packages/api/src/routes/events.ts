@@ -1,14 +1,22 @@
 import { Hono } from "hono";
 import { createEventInDb } from "../db";
 import { SQL } from "bun";
+import { sValidator } from '@hono/standard-validator';
+import * as z from 'zod';
+import { DbEventInsertSchema } from "../types/events";
+
 
 // https://hono.dev/docs/api/request#json
 // To test:
 // curl -X POST http://localhost:3000/api/events -H "Content-Type: application/json" -d '{"name":"Test Event","starts_at":"2026-05-01T10:00:00Z","ends_at":"2026-05-01T11:00:00Z","location":"40.7128,-74.0060"}'
 export const eventsApp = new Hono().post(
-  ('/'), async (c) => {
-    const body = await c.req.json();
-
+  ('/'),
+  sValidator(
+    'json',
+    DbEventInsertSchema
+  ),
+  async (c) => {
+    const body = c.req.valid('json')
   // https://bun.com/docs/runtime/sql#error-classes
     try {
       const createdEvent = await createEventInDb(

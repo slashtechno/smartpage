@@ -20,6 +20,7 @@ const app = new Hono().route("/api", apiApp);
 
 
 export default app;
+export type AppType = typeof app;
 
 showRoutes(app, {
   verbose: true,
