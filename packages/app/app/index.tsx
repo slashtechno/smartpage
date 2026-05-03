@@ -1,15 +1,27 @@
-import { Text, View } from "react-native";
+import { useTheme } from '@/src/theme';
+import { Text, View, StyleSheet } from 'react-native';
+let theme;
 
 export default function Index() {
+  theme = useTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.background
+    },
+    text: {
+      color: theme.text
+    }
+
+  })
+
   return (
     <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+      style={styles.container}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text style={styles.text}>Home Screen</Text>
     </View>
   );
 }

@@ -9,7 +9,8 @@ This project exists for the user to LEARN — not to have code written for them.
 ## Stack
 - **Mobile**: Expo (React Native) — camera + share extension
 - **API**: Hono on Bun
-- **Database**: Postgres via Bun's built-in SQL client (`import { sql } from "bun"`)
+- **Database**: Postgres via Bun's built-in SQL client (`import { sql } from "bun"`); dbmate for migrations
+- **Validation**: Zod — request validation via `@hono/standard-validator` + TypeScript type inference (`z.infer`)
 - **AI**: Claude vision API (image → structured event data)
 - **Calendar**: Google Calendar API (or Apple EventKit for iOS-only)
 
