@@ -38,6 +38,14 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to process real-world event information",
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": false
+        }
       ]
     ],
     "experiments": {
