@@ -7,6 +7,10 @@ export const DbEventInsertSchema = z.object({
   location: z.string().optional(),
 });
 
+export const eventProcessSchema = z.object({
+  image: z.instanceof(File),
+});
+
 export type DbEventInsert = z.infer<typeof DbEventInsertSchema>;
 
 // https://www.typescriptlang.org/docs/handbook/utility-types.html

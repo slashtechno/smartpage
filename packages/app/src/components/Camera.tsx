@@ -1,8 +1,26 @@
 import { useTheme } from "@/src/theme";
-import { Text, View, StyleSheet, Button, Platform } from "react-native";
+import { Text, View, StyleSheet, Button, Platform, TouchableOpacity } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { useRef, useState } from "react"
+import { client } from "@/src/client";
+
+
+let ref: React.RefObject<CameraView | null>;
+
+const takePicture = async (setUri: React.Dispatch<React.SetStateAction<string | null>>) => {
+  const photo = await ref.current?.takePictureAsync();
+  // Use fetch to convert uri (file:// on mobile and base64 on web) to blob
+  if (!photo?.uri) return;
+  setUri(photo.uri);
+  const blob = await (await fetch(photo.uri)).blob();
+  const file = new File([blob], "image.jpg", { type: "image/jpeg" });
+  const res = await client.api.events.process.$post({ form: { image: file } });
+  console.log(await res.json());
+};
 
 export default function Camera() {
+  const [uri, setUri] =  useState<string | null>(null);
+  ref = useRef<CameraView>(null);
   let theme = useTheme();
   const styles = StyleSheet.create({
     text: {
@@ -34,8 +52,8 @@ export default function Camera() {
     },
     buttonContainer: {
       position: "absolute",
-      bottom: 64,
-      flexDirection: "row",
+      bottom: 32,
+      flexDirection: "row", // if more buttons get added
       backgroundColor: "transparent",
       width: "100%",
       paddingHorizontal: 64,
@@ -56,12 +74,12 @@ export default function Camera() {
       {/*Expand this container in whatever space is left after the text (using flex) and then center children on the primary axis*/}
       {permission.granted ? (
         <View style={styles.cameraContainer}>
-          <CameraView style={styles.cameraView} facing="back" />
-          {/*<View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-              <Text style={styles.text}>Flip Camera</Text>
+          <CameraView ref={ref} style={styles.cameraView} facing="back" />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={async () => {takePicture(setUri)}}>
+              <Text style={styles.text}>Take picture</Text>
             </TouchableOpacity>
-          </View>*/}
+          </View>
         </View>
       ) : (
         <View style={{backgroundColor: theme.background}}>

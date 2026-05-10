@@ -3,8 +3,8 @@ import { createEventInDb } from "../db";
 import { SQL } from "bun";
 import { sValidator } from '@hono/standard-validator';
 import * as z from 'zod';
-import { DbEventInsertSchema } from "../types/events";
-
+import { DbEventInsertSchema, eventProcessSchema } from "../types/events";
+import asciify from "asciify-image";
 
 // https://hono.dev/docs/api/request#json
 // To test:
@@ -39,4 +39,19 @@ export const eventsApp = new Hono().post(
       }, 500)
     }
   }
-);
+).post(
+  ("/process"),
+  sValidator(
+    'form',
+    eventProcessSchema
+  ),
+  async (c) => {
+    console.log("test")
+    const body = c.req.valid("form");
+    const file = body.image
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const ascii = await asciify(buffer, { fit: "width", width: 80, color: false });
+    console.log(ascii);
+    return c.json({ ok: true });
+  }
+)
