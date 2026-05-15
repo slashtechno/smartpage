@@ -3,18 +3,18 @@ import { Text, View, StyleSheet, Button, Platform, TouchableOpacity } from "reac
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react"
 import { client } from "@/src/client";
-
+import { File } from "expo-file-system"
 
 let ref: React.RefObject<CameraView | null>;
 
 const takePicture = async (setUri: React.Dispatch<React.SetStateAction<string | null>>) => {
   const photo = await ref.current?.takePictureAsync();
-  // Use fetch to convert uri (file:// on mobile and base64 on web) to blob
   if (!photo?.uri) return;
+
   setUri(photo.uri);
-  const blob = await (await fetch(photo.uri)).blob();
-  const file = new File([blob], "image.jpg", { type: "image/jpeg" });
-  const res = await client.api.events.process.$post({ form: { image: file } });
+  const photoFetched = await fetch(photo.uri)
+  const photoBlob = await photoFetched.blob()
+  const res = await client.api.events.process.$post({ form: { image: photoBlob as any} });
   console.log(await res.json());
 };
 
