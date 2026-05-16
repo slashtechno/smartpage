@@ -55,3 +55,4 @@ export const eventsApp = new Hono().post(
     return c.json({ ok: true });
   }
 )
+  

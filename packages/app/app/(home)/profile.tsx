@@ -1,7 +1,6 @@
 import { useTheme } from "@/src/theme";
-import Camera from "@/src/components/Camera";
 import { Text, View, StyleSheet } from "react-native";
-export default function Index() {
+export default function Profile() {
   let theme = useTheme();
   const styles = StyleSheet.create({
     container: {
@@ -11,13 +10,13 @@ export default function Index() {
     text: {
       color: theme.text,
       textAlign: "center",
-      margin: "1%"
+      margin: "1%",
     },
   });
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Home Screen</Text>
-      <Camera/>
+      <Text style={styles.text}>Profile</Text>
     </View>
   );
 }

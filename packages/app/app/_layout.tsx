@@ -18,6 +18,8 @@ export default function RootLayout() {
         // headerShadowVisible: Platform.OS === "web" ? false : true
         headerShown: Platform.OS === "web" ? false : true,
       }}
-    />
+    >
+      {/*<Stack.Screen name="(home)" options={{title: "hello"}} />*/}
+    </Stack>
   );
 }
