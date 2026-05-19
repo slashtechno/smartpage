@@ -9,7 +9,7 @@ export default function Index() {
       backgroundColor: theme.background,
     },
     text: {
-      color: theme.text,
+      color: theme.foreground,
       textAlign: "center",
       margin: "1%",
     },

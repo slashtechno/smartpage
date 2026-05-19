@@ -24,7 +24,7 @@ export default function Camera() {
   let theme = useTheme();
   const styles = StyleSheet.create({
     text: {
-      color: theme.text,
+      color: theme.foreground,
       textAlign: "center",
     },
 

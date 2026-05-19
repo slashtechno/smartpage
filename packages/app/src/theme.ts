@@ -1,14 +1,20 @@
 import { useColorScheme } from "react-native";
 
-const palette = {
-  light: { background: "#FFFFFF", text: "#264653", accent: "#2A9D8F" },
-  dark: { background: "#111827", text: "#F9FAFB", accent: "#2A9D8F" },
-};
+export const colors = {
+  // background: page/screen fill | foreground: default text | primary: brand/action color
+  light: { background: '#FFFFFF', foreground: '#264653', primary: '#2A9D8F' },
+  dark:  { background: '#111827', foreground: '#F9FAFB', primary: '#2A9D8F' },
+} as const;
+
+export const themes = {
+  light: { '--color-primary': colors.light.primary, '--color-background': colors.light.background, '--color-foreground': colors.light.foreground },
+  dark:  { '--color-primary': colors.dark.primary,  '--color-background': colors.dark.background,  '--color-foreground': colors.dark.foreground },
+} as const;
+
+
+
 
 export function useTheme() {
   const scheme = useColorScheme();
-  return palette[scheme ?? "light"];
+  return colors[scheme === 'dark' ? 'dark' : 'light'];
 }
-// To use it in a component:
-// get the theme with `const theme = useTheme();`
-// and then use theme.text or whtever in place of a color
