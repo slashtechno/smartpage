@@ -1,0 +1,14 @@
+/*@import "tailwindcss";
+@import "nativewind/theme";*/
+
+
+@import "tailwindcss/theme.css";
+@import "tailwindcss/preflight.css";
+@import "tailwindcss/utilities.css";
+@import "nativewind/theme";
+
+@theme {
+  --color-primary: #FFFFFF;
+  --color-background: #FFFFFF;
+  --color-foreground: #FFFFFF;
+}
