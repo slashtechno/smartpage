@@ -1,4 +1,4 @@
-import * as z from 'zod'
+import * as z from "zod";
 
 export const DbEventInsertSchema = z.object({
   name: z.string(),
@@ -15,6 +15,6 @@ export type DbEventInsert = z.infer<typeof DbEventInsertSchema>;
 
 // https://www.typescriptlang.org/docs/handbook/utility-types.html
 export type DbEvent = DbEventInsert & {
-  id: number,
-  created_at: Date
+  id: number;
+  created_at: Date;
 };

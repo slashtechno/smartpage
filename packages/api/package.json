@@ -4,10 +4,11 @@
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
+    "@hono/clerk-auth": "^3.1.1",
     "@hono/standard-validator": "^0.2.2",
     "asciify-image": "^0.1.10",
     "dbmate": "^2.32.0",
-    "hono": "^4.12.15",
+    "hono": "^4.12.23",
     "zod": "^4.4.1"
   },
   "devDependencies": {

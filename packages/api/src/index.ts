@@ -1,26 +1,30 @@
-import { Hono } from 'hono';
-import { showRoutes } from 'hono/dev';
-import { eventsApp } from './routes/events';
-import { cors } from 'hono/cors'
+import { Hono } from "hono";
+import { showRoutes } from "hono/dev";
+import { eventsApp } from "./routes/events";
+import { cors } from "hono/cors";
+import { clerkMiddleware } from "@hono/clerk-auth";
 
 // https://hono.dev/docs/api/request#json
-const apiApp = new Hono().post(
-  ('/'), async (c) => {
+const apiApp = new Hono()
+  .post("/", async (c) => {
     // const body = await c.req.json();
 
     return c.json({
       ok: true,
     });
-  }
-).route("/events", eventsApp);
+  })
+  .route("/events", eventsApp);
 
 // https://hono.dev/examples/grouping-routes-rpc
 // https://hono.dev/docs/api/routing#grouping
-const app = new Hono().use(cors()).route("/api", apiApp);
+const app = new Hono().use(cors());
+app.use(clerkMiddleware());
+
+const routes = app.route("/api", apiApp);
 
 export default app;
-export type AppType = typeof app;
+export type AppType = typeof routes;
 
 showRoutes(app, {
   verbose: true,
-})
+});

@@ -1,13 +1,21 @@
 import '@/src/global.css';
 import { VariableContextProvider } from "nativewind";
   import { Stack } from "expo-router";
+import { ClerkProvider } from '@clerk/expo'
+import { tokenCache } from '@clerk/expo/token-cache'
 import { Platform, useColorScheme } from "react-native";
 import { colors, themes } from '@/src/theme';
+
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+if (!publishableKey) {
+  throw new Error('Add your Clerk Publishable Key to the .env file')
+}
 
 export default function RootLayout() {
   // https://docs.expo.dev/tutorial/configuration/#configure-the-status-bar & https://docs.expo.dev/router/advanced/stack/#configure-header-bar
   const colorScheme = useColorScheme() === 'dark' ? 'dark' : 'light';
   return (
+  <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
   <VariableContextProvider value={themes[colorScheme]}>
     <Stack
       screenOptions={{
@@ -24,6 +32,7 @@ export default function RootLayout() {
     >
       {/*<Stack.Screen name="(home)" options={{title: "hello"}} />*/}
       </Stack>
-  </VariableContextProvider>
+      </VariableContextProvider>
+  </ClerkProvider>
   );
 }
