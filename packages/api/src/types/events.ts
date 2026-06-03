@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { zodTimezone } from "./misc";
 
 // Event data that can be taken from untrusted sources (no user_id)
 export const EventSafeCreateSchema = z.object({
@@ -14,6 +15,7 @@ export const DbEventInsertSchema = EventSafeCreateSchema.extend({
 
 export const eventProcessSchema = z.object({
   image: z.instanceof(File),
+  timezone: zodTimezone(),
 });
 
 export type DbEventInsert = z.infer<typeof DbEventInsertSchema>;

@@ -3,7 +3,6 @@ import { Text, View, StyleSheet, Button, Platform, TouchableOpacity } from "reac
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react"
 import { client } from "@/src/client";
-import { File } from "expo-file-system"
 
 let ref: React.RefObject<CameraView | null>;
 
@@ -14,7 +13,7 @@ const takePicture = async (setUri: React.Dispatch<React.SetStateAction<string | 
   setUri(photo.uri);
   const photoFetched = await fetch(photo.uri)
   const photoBlob = await photoFetched.blob()
-  const res = await client.api.events.process.$post({ form: { image: photoBlob as any} });
+  const res = await client.api.events.process.$post({ form: { image: photoBlob as any, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone} });
   console.log(await res.json());
 };
 

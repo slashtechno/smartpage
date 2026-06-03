@@ -6,6 +6,7 @@ import * as z from "zod";
 import { eventProcessSchema, EventSafeCreateSchema } from "../types/events";
 import asciify from "asciify-image";
 import { getAuth } from "@hono/clerk-auth";
+import { callAgent } from "../agent";
 
 // https://hono.dev/docs/api/request#json
 // To test:
@@ -21,7 +22,7 @@ export const eventsApp = new Hono()
 
     // https://bun.com/docs/runtime/sql#error-classes
     try {
-      const createdEvent = await createEventInDb(body);
+      const createdEvent = await createEventInDb({ ...body, user_id: "test" })
       return c.json(
         {
           createdEvent,
@@ -54,12 +55,10 @@ export const eventsApp = new Hono()
     console.log("test");
     const body = c.req.valid("form");
     const file = body.image;
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const ascii = await asciify(buffer, {
-      fit: "width",
-      width: 80,
-      color: false,
-    });
-    console.log(ascii);
+    const fileArrayBuffer = await file.arrayBuffer();
+
+    const agentResult = await callAgent(fileArrayBuffer, body.timezone);
+    console.log(agentResult);
+
     return c.json({ ok: true });
   });
