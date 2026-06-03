@@ -3,7 +3,7 @@ import { createEventInDb } from "../db";
 import { SQL } from "bun";
 import { sValidator } from "@hono/standard-validator";
 import * as z from "zod";
-import { DbEventInsertSchema, eventProcessSchema } from "../types/events";
+import { eventProcessSchema, EventSafeCreateSchema } from "../types/events";
 import asciify from "asciify-image";
 import { getAuth } from "@hono/clerk-auth";
 
@@ -11,7 +11,7 @@ import { getAuth } from "@hono/clerk-auth";
 // To test:
 // curl -X POST http://localhost:3000/api/events -H "Content-Type: application/json" -d '{"name":"Test Event","starts_at":"2026-05-01T10:00:00Z","ends_at":"2026-05-01T11:00:00Z","location":"40.7128,-74.0060"}'
 export const eventsApp = new Hono()
-  .post("/", sValidator("json", DbEventInsertSchema), async (c) => {
+  .post("/", sValidator("json", EventSafeCreateSchema), async (c) => {
     const { userId } = getAuth(c);
     if (!userId) {
       return c.json({ message: "Unauthorized" }, 401);
