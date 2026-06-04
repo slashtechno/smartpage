@@ -47,22 +47,25 @@ export const ClientContext = createContext<ReturnType<
 
 // We need the context provider to be able to run useContext(ClientContext) in other coponents
 export function ClientProvider({ children }: { children: React.ReactNode }) {
-  const url = useContext(UrlContext)!
-  const { getToken } = useAuth()
+  const url = useContext(UrlContext)!;
+  const { getToken } = useAuth();
 
-  const authFetch = async (input: string | URL | FetchRequestLike, init?: FetchRequestInit) => {
-    const token = await getToken()
-    const headers = new Headers(init?.headers)
-    headers.set('Authorization', `Bearer ${token}`)
+  const authFetch = async (
+    input: string | URL | FetchRequestLike,
+    init?: FetchRequestInit,
+  ) => {
+    const token = await getToken();
+    const headers = new Headers(init?.headers);
+    headers.set("Authorization", `Bearer ${token}`);
     return fetch(input, {
       ...init,
-      headers
-    })
-  }
+      headers,
+    });
+  };
 
-  const client = hc<AppType>(url, { fetch: authFetch })
+  const client = hc<AppType>(url, { fetch: authFetch });
 
-  return <ClientContext value={client}>{children}</ClientContext>
+  return <ClientContext value={client}>{children}</ClientContext>;
 }
 
 const UrlContext = createContext<string | null>(null);
@@ -72,7 +75,7 @@ export function UrlProvider({ children }: { children: React.ReactNode }) {
   // The effect makes it so we can use async (https://react.dev/reference/react/useEffect#usage)
   // That's literally the only reason it's here: to serve as an escape hatch fro the synchronous component body
   useEffect(() => {
-   // https://react.dev/reference/react/useState#storing-a-function-in-state: "If you pass a function as nextState, it will be treated as an updater function... To store a function in state, you must put it into a lambda before passing
+    // https://react.dev/reference/react/useState#storing-a-function-in-state: "If you pass a function as nextState, it will be treated as an updater function... To store a function in state, you must put it into a lambda before passing
     (async () => {
       const foundUrl = await pickUrl(backendUrls);
       setUrl(foundUrl);

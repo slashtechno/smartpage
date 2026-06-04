@@ -22,7 +22,7 @@ export const eventsApp = new Hono()
 
     // https://bun.com/docs/runtime/sql#error-classes
     try {
-      const createdEvent = await createEventInDb({ ...body, user_id: "test" })
+      const createdEvent = await createEventInDb({ ...body, user_id: "test" });
       return c.json(
         {
           createdEvent,
@@ -58,5 +58,5 @@ export const eventsApp = new Hono()
     const agentResult = await callAgent(fileArrayBuffer, body.timezone);
     console.log(agentResult);
 
-    return c.json({ eventDetails: agentResult })
+    return c.json({ eventDetails: agentResult });
   });

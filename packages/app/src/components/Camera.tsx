@@ -21,8 +21,7 @@ const takePicture = async (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   client: ReturnType<typeof hc<AppType>>,
 ) => {
-
-  setLoading(true)
+  setLoading(true);
   const photo = await ref.current?.takePictureAsync();
   if (!photo?.uri) return;
 
@@ -36,7 +35,7 @@ const takePicture = async (
     },
   });
   console.log(await res.json());
-  setLoading(false)
+  setLoading(false);
 };
 
 export default function Camera() {
@@ -105,7 +104,7 @@ export default function Camera() {
             ) : (
               <TouchableOpacity
                 style={styles.button}
-                  onPress={async () => {
+                onPress={async () => {
                   takePicture(setUri, setIsProcessing, client!);
                 }}
               >

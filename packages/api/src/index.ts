@@ -27,4 +27,7 @@ export type AppType = typeof app;
 showRoutes(app, {
   verbose: true,
 });
-console.log('CLERK_SECRET_KEY set:', process.env.CLERK_SECRET_KEY?.slice(0, 10) + '...')
+console.log(
+  "CLERK_SECRET_KEY set:",
+  process.env.CLERK_SECRET_KEY?.slice(0, 10) + "...",
+);

@@ -63,7 +63,8 @@ export async function callAgent(
     options: { timezone: timezone },
   });
   return output;
-}z  
+}
+z;
 
 if (import.meta.main) {
   // only runs when this file is executed directly

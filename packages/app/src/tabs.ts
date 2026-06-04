@@ -1,16 +1,15 @@
-import { Href } from 'expo-router';
-import type { AndroidSymbol, SFSymbol } from 'expo-symbols';
+import { Href } from "expo-router";
+import type { AndroidSymbol, SFSymbol } from "expo-symbols";
 export type Tab = {
   // `index` for index.tsx, for example
-  name: string,
-  label: string
-  href: Href
+  name: string;
+  label: string;
+  href: Href;
   // Apple SF symbol (https://github.com/andrewtavis/sf-symbols-online)
-  sf: SFSymbol,
+  sf: SFSymbol;
   // Google Material symbol (https://fonts.google.com/icons)
-  md: AndroidSymbol
-}
-
+  md: AndroidSymbol;
+};
 
 export const homeTabs: Tab[] = [
   {
