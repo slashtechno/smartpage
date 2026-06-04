@@ -100,7 +100,7 @@ export default function Camera() {
           <CameraView ref={ref} style={styles.cameraView} facing="back" />
           <View style={styles.buttonContainer}>
             {isProcessing ? (
-              <ActivityIndicator />
+              <ActivityIndicator style={styles.button} />
             ) : (
               <TouchableOpacity
                 style={styles.button}
