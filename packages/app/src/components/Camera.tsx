@@ -13,11 +13,14 @@ import { useRef, useState, useContext } from "react";
 import { ClientContext } from "./client";
 import { AppType } from "api";
 import { hc } from "hono/client";
+import { EventDraft, EventDraftContext } from "./eventDraft";
+import { router } from "expo-router";
 
 let ref: React.RefObject<CameraView | null>;
 
 const takePicture = async (
   setUri: React.Dispatch<React.SetStateAction<string | null>>,
+  setEventDraft: React.Dispatch<React.SetStateAction<EventDraft | null>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   client: ReturnType<typeof hc<AppType>>,
 ) => {
@@ -34,13 +37,18 @@ const takePicture = async (
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   });
-  console.log(await res.json());
   setLoading(false);
+  if (!res.ok) return;
+  const eventData = await res.json()
+  console.log(`Event data: ${eventData}`);
+  setEventDraft(eventData.eventDetails)
+  router.push('/confirm')
 };
 
 export default function Camera() {
-  const [uri, setUri] = useState<string | null>(null);
+  const [, setUri] = useState<string | null>(null);
   const client = useContext(ClientContext);
+  const {setEventDraft } = useContext(EventDraftContext)!
   const [isProcessing, setIsProcessing] = useState(false);
 
   ref = useRef<CameraView>(null);
@@ -84,6 +92,9 @@ export default function Camera() {
     button: {
       flex: 1,
       alignItems: "center",
+      paddingVertical: 15,
+      borderRadius: '10%',
+      backgroundColor: theme.background
     },
   });
 
@@ -105,7 +116,7 @@ export default function Camera() {
               <TouchableOpacity
                 style={styles.button}
                 onPress={async () => {
-                  takePicture(setUri, setIsProcessing, client!);
+                  takePicture(setUri, setEventDraft, setIsProcessing ,client!);
                 }}
               >
                 <Text style={styles.text}>Take picture</Text>

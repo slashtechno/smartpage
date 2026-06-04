@@ -27,3 +27,8 @@ This project exists for the user to LEARN — not to have code written for them.
 - Mobile dev with Expo: camera, share extensions, fetch/multipart uploads
 - Hono: routing, middleware, file uploads, JSON responses
 - Monorepo (expo frontend + hono backend) with Bun Workspaces with RPC for type safety
+
+
+## Notes
+- Do not ask the user to show you their code: you are an agent, you can explore the codebase
+- Understand your knowledge may be incorrect: you can perform research to provide a better answer to the user

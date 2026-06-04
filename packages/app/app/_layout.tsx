@@ -6,6 +6,7 @@ import { tokenCache } from "@clerk/expo/token-cache";
 import { Platform, useColorScheme } from "react-native";
 import { colors, themes } from "@/src/theme";
 import { ClientProvider, UrlProvider } from "@/src/components/client";
+import { EventDraftProvider } from "@/src/components/eventDraft";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 if (!publishableKey) {
@@ -20,6 +21,7 @@ export default function RootLayout() {
       <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
         <ClientProvider>
           <VariableContextProvider value={themes[colorScheme]}>
+            <EventDraftProvider>
             <Stack
               screenOptions={{
                 headerStyle: {
@@ -34,7 +36,12 @@ export default function RootLayout() {
               }}
             >
               {/*<Stack.Screen name="(home)" options={{title: "hello"}} />*/}
+              <Stack.Screen
+                name="confirm"
+                options={{ title: "Confirm Event", presentation: "modal" }}
+              />
             </Stack>
+            </EventDraftProvider>
           </VariableContextProvider>
         </ClientProvider>
       </ClerkProvider>
