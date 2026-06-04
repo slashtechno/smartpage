@@ -1,7 +1,7 @@
 {
   "name": "api",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot --env-file ../../.env src/index.ts"
   },
   "dependencies": {
     "@hono/clerk-auth": "^3.1.1",

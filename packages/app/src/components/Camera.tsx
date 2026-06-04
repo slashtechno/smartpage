@@ -1,24 +1,49 @@
 import { useTheme } from "@/src/theme";
-import { Text, View, StyleSheet, Button, Platform, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  Platform,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useRef, useState } from "react"
-import { client } from "@/src/client";
+import { useRef, useState, useContext } from "react";
+import { ClientContext } from "./client";
+import { AppType } from "api";
+import { hc } from "hono/client";
 
 let ref: React.RefObject<CameraView | null>;
 
-const takePicture = async (setUri: React.Dispatch<React.SetStateAction<string | null>>) => {
+const takePicture = async (
+  setUri: React.Dispatch<React.SetStateAction<string | null>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  client: ReturnType<typeof hc<AppType>>,
+) => {
+
+  setLoading(true)
   const photo = await ref.current?.takePictureAsync();
   if (!photo?.uri) return;
 
   setUri(photo.uri);
-  const photoFetched = await fetch(photo.uri)
-  const photoBlob = await photoFetched.blob()
-  const res = await client.api.events.process.$post({ form: { image: photoBlob as any, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone} });
+  const photoFetched = await fetch(photo.uri);
+  const photoBlob = await photoFetched.blob();
+  const res = await client.api.events.process.$post({
+    form: {
+      image: photoBlob as any,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+  });
   console.log(await res.json());
+  setLoading(false)
 };
 
 export default function Camera() {
-  const [uri, setUri] =  useState<string | null>(null);
+  const [uri, setUri] = useState<string | null>(null);
+  const client = useContext(ClientContext);
+  const [isProcessing, setIsProcessing] = useState(false);
+
   ref = useRef<CameraView>(null);
   let theme = useTheme();
   const styles = StyleSheet.create({
@@ -43,7 +68,7 @@ export default function Camera() {
       // controls itself within parent
       alignSelf: "center",
 
-      borderRadius: "5%"
+      borderRadius: "5%",
     },
     cameraView: {
       width: "100%",
@@ -75,13 +100,22 @@ export default function Camera() {
         <View style={styles.cameraContainer}>
           <CameraView ref={ref} style={styles.cameraView} facing="back" />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={async () => {takePicture(setUri)}}>
-              <Text style={styles.text}>Take picture</Text>
-            </TouchableOpacity>
+            {isProcessing ? (
+              <ActivityIndicator />
+            ) : (
+              <TouchableOpacity
+                style={styles.button}
+                  onPress={async () => {
+                  takePicture(setUri, setIsProcessing, client!);
+                }}
+              >
+                <Text style={styles.text}>Take picture</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       ) : (
-        <View style={{backgroundColor: theme.background}}>
+        <View style={{ backgroundColor: theme.background }}>
           <Text style={styles.message}>
             We need your permission to show the camera
           </Text>

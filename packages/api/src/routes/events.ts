@@ -51,8 +51,6 @@ export const eventsApp = new Hono()
     if (!userId) {
       return c.json({ message: "Unauthorized" }, 401);
     }
-
-    console.log("test");
     const body = c.req.valid("form");
     const file = body.image;
     const fileArrayBuffer = await file.arrayBuffer();
@@ -60,5 +58,5 @@ export const eventsApp = new Hono()
     const agentResult = await callAgent(fileArrayBuffer, body.timezone);
     console.log(agentResult);
 
-    return c.json({ ok: true });
+    return c.json({ eventDetails: agentResult })
   });

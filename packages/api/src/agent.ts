@@ -63,7 +63,7 @@ export async function callAgent(
     options: { timezone: timezone },
   });
   return output;
-}
+}z  
 
 if (import.meta.main) {
   // only runs when this file is executed directly
@@ -72,5 +72,6 @@ if (import.meta.main) {
   // Local file
   const file = Bun.file("test-event.png");
 
+  // Each run seems to take $0.0008
   console.log(await callAgent(await file.arrayBuffer(), "America/Chicago"));
 }
