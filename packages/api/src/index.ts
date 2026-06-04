@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { showRoutes } from "hono/dev";
 import { eventsApp } from "./routes/events";
 import { cors } from "hono/cors";
-import { clerkMiddleware } from "@hono/clerk-auth";
+import { clerkMiddleware } from "@clerk/hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 
 // https://hono.dev/docs/api/request#json

@@ -4,7 +4,7 @@
     "dev": "bun run --hot --env-file ../../.env src/index.ts"
   },
   "dependencies": {
-    "@hono/clerk-auth": "^3.1.1",
+    "@clerk/hono": "^0.1.33",
     "@hono/standard-validator": "^0.2.2",
     "ai": "^6.0.195",
     "asciify-image": "^0.1.10",

@@ -5,7 +5,7 @@ import { sValidator } from "@hono/standard-validator";
 import * as z from "zod";
 import { eventProcessSchema, EventSafeCreateSchema } from "../types/events";
 import asciify from "asciify-image";
-import { getAuth } from "@hono/clerk-auth";
+import { getAuth } from "@clerk/hono";
 import { callAgent } from "../agent";
 
 // https://hono.dev/docs/api/request#json
