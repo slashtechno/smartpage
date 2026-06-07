@@ -15,6 +15,9 @@ node_modules/
 .vscode/
 .idea/
 
+# Claude Code local settings
+.claude/
+
 # Expo
 packages/app/.expo/
 packages/app/dist/

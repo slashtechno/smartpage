@@ -79,11 +79,6 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "extra": {
-      "backendUrls": [
-        "http://localhost:3000",
-        "http://100.98.178.57:3000"
-      ]
-    }
+    "extra": {}
   }
 }

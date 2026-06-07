@@ -8,7 +8,7 @@ Produces an unsigned `.ipa` for installation via [SideStore](https://sidestore.i
 - macOS with Xcode installed (you never need to open the GUI)
 - Bun installed globally
 
-## Build
+## Build locally
 
 ```sh
 sh build-sideload.sh
@@ -16,16 +16,36 @@ sh build-sideload.sh
 
 Output: `dist/smartpage.ipa`
 
-The script runs `expo prebuild`, resolves Swift Package dependencies, archives without signing, then manually zips the `.app` into an IPA.
+The script runs `expo prebuild --clean`, resolves Swift Package dependencies, archives without signing, then manually zips the `.app` into an IPA.
 
 ## Sideloading via SideStore
+
+### Manual (transfer the IPA directly)
 
 1. Install SideStore on your device — follow the [SideStore docs](https://docs.sidestore.io/docs/intro)
 2. Transfer `dist/smartpage.ipa` to your device (AirDrop, Files app, etc.)
 3. Open SideStore → tap **+** → select the `.ipa`
 4. SideStore signs and installs it using your Apple ID
 
-SideStore refreshes the 7-day certificate automatically in the background over Wi-Fi.
+### Via source URL (auto-updates)
+
+Add the source URL to SideStore and install from there — updates are detected automatically on every CI build.
+
+**Source URL:** `https://github.com/slashtechno/smartpage/releases/download/rolling/altstore-source.json`
+
+> Requires the repo to be **public** — GitHub release assets on private repos require auth that SideStore won't send.
+
+## CI: Rolling release (GitHub Actions)
+
+Every push to `main` triggers `.github/workflows/build-ios.yml`, which:
+
+1. Builds the unsigned IPA on a `macos-26` runner (Apple Silicon, Xcode with iOS 26 SDK)
+2. Publishes it to the [`rolling`](https://github.com/slashtechno/smartpage/releases/tag/rolling) GitHub release (overwriting the previous IPA)
+3. Generates `altstore-source.json` from `app.json` and publishes it alongside the IPA
+
+Version format: `<expo.version>-<git-sha>` (e.g. `1.0.0-a3f2c1b`) — every push appears as a new version so SideStore always prompts for an update. To only prompt on intentional releases, change the version step in the workflow to use `expo.version` alone.
+
+> Note: macOS runners bill at 10× the standard minute rate. A full build takes ~15–20 min.
 
 ## Alternative: EAS Local Builds
 
@@ -41,4 +61,5 @@ See the [EAS local builds docs](https://docs.expo.dev/build-reference/local-buil
 
 - [Expo Prebuild / CNG](https://docs.expo.dev/workflow/continuous-native-generation/)
 - [EAS Local Builds](https://docs.expo.dev/build-reference/local-builds/)
+- [AltStore Source Format](https://faq.altstore.io/developers/make-a-source)
 - [SideStore](https://sidestore.io) · [SideStore Docs](https://docs.sidestore.io/docs/intro)
