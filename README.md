@@ -1,5 +1,7 @@
 # smartpage
 
+NOTE: this app is still in development. The backend isn't deployed yet, so the instalable app isn't actually usable
+
 Take a photo of an event flyer -> automatically added to your calendar.
 
 This app isn't on the App Store yet. Click below to add it to an alternative iOS App Store to install it. If you don't yet have one, check out SideStore. Alternatively, download the .ipa from the [rolling release](https://github.com/slashtechno/smartpage/releases/rolling) and sideload it using a Mac.
