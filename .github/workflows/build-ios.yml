@@ -11,6 +11,11 @@ on:
     paths-ignore:
       - '**.md'
 
+# Cancel any in-progress run on the same branch when a new push arrives
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: macos-26
@@ -60,74 +65,20 @@ jobs:
       - name: Compute build metadata
         id: meta
         run: |
-          VERSION=$(python3 -c "import json; print(json.load(open('packages/app/app.json'))['expo']['version'])")
+          VERSION=$(bun -e "process.stdout.write(require('./packages/app/app.json').expo.version)")
           SHA=$(git rev-parse --short HEAD)
           echo "version=${VERSION}-${SHA}" >> $GITHUB_OUTPUT
           echo "date=$(date -u +%Y-%m-%d)" >> $GITHUB_OUTPUT
           echo "size=$(stat -f%z packages/app/dist/smartpage.ipa)" >> $GITHUB_OUTPUT
 
-      # Generate the source JSON from app.json at build time — bundle ID, name, icon,
-      # and permission strings are all derived so there's no separate file to maintain.
-      # env: vars ensure step outputs are never interpolated directly into the script.
+      # Generate the source JSON from app.json — runs as a committed script so it's
+      # readable and testable, not buried in a YAML heredoc.
       - name: Generate AltStore source JSON from app.json
         env:
           VERSION: ${{ steps.meta.outputs.version }}
           BUILD_DATE: ${{ steps.meta.outputs.date }}
           IPA_SIZE: ${{ steps.meta.outputs.size }}
-        run: |
-          python3 - <<'EOF'
-          import json, os
-
-          with open('packages/app/app.json') as f:
-              expo = json.load(f)['expo']
-
-          # Extract permission strings from the plugins array in app.json
-          camera_perm = "Allow this app to access your camera."
-          calendar_perm = "Allow this app to add events to your calendar."
-          for plugin in expo.get('plugins', []):
-              if isinstance(plugin, list) and len(plugin) > 1:
-                  name, config = plugin[0], plugin[1]
-                  if name == 'expo-camera':
-                      camera_perm = config.get('cameraPermission', camera_perm)
-                  if name == 'expo-calendar':
-                      calendar_perm = config.get('calendarPermission', calendar_perm)
-
-          # Convert local icon path (./assets/...) to GitHub raw content URL
-          icon_rel = expo.get('icon', './assets/images/icon.png').lstrip('./')
-          icon_url = f"https://raw.githubusercontent.com/slashtechno/smartpage/main/packages/app/{icon_rel}"
-
-          download_url = "https://github.com/slashtechno/smartpage/releases/download/rolling/smartpage.ipa"
-
-          source = {
-              "name": expo['name'].capitalize(),
-              "apps": [{
-                  "name": expo['name'],
-                  "bundleIdentifier": expo['ios']['bundleIdentifier'],
-                  "developerName": "slashtechno",
-                  "localizedDescription": "Capture real-world event information with your camera and add them to your calendar.",
-                  "iconURL": icon_url,
-                  "downloadURL": download_url,
-                  "versions": [{
-                      "version": os.environ['VERSION'],
-                      "date": os.environ['BUILD_DATE'],
-                      "downloadURL": download_url,
-                      "size": int(os.environ['IPA_SIZE'])
-                  }],
-                  "appPermissions": {
-                      "entitlements": [],
-                      "privacy": {
-                          "NSCameraUsageDescription": camera_perm,
-                          "NSCalendarsUsageDescription": calendar_perm
-                      }
-                  }
-              }],
-              "news": []
-          }
-
-          with open('/tmp/altstore-source.json', 'w') as f:
-              json.dump(source, f, indent=2)
-              f.write('\n')
-          EOF
+        run: bun .github/scripts/generate-altstore-source.js
 
       # Publish the IPA and source JSON as assets on the rolling release.
       # softprops/action-gh-release@v2 creates the release if it doesn't exist,

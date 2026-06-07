@@ -25,6 +25,7 @@ xcodebuild archive \
   -scheme "$APP_NAME" \
   -configuration Release \
   -archivePath "build/$APP_NAME.xcarchive" \
+  -quiet \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO \
   CODE_SIGN_IDENTITY=""
