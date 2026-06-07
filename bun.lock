@@ -74,9 +74,6 @@
       },
     },
   },
-  "patchedDependencies": {
-    "@expo/metro-config@55.0.21": "patches/@expo%2Fmetro-config@55.0.21.patch",
-  },
   "overrides": {
     "lightningcss": "1.30.1",
   },
