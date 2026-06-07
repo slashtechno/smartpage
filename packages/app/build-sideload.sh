@@ -5,6 +5,7 @@
 # Usage: sh build-sideload.sh
 
 set -e
+set -o pipefail  # propagate xcodebuild exit code through the xcbeautify pipe
 
 # expo.name in app.json matches the Xcode scheme name for all expo prebuild projects
 APP_NAME=smartpage  # must match expo.name in app.json and the Xcode scheme
@@ -17,7 +18,8 @@ CI=1 bunx expo prebuild --platform ios --clean
 # Resolve Swift Package transitive dependencies (Nuke, PhoneNumberKit, etc.) before compiling
 xcodebuild -resolvePackageDependencies \
   -workspace "ios/$APP_NAME.xcworkspace" \
-  -scheme "$APP_NAME"
+  -scheme "$APP_NAME" \
+  | xcbeautify --quiet
 
 # Archive without signing — CODE_SIGN_IDENTITY="" skips certificate lookup entirely
 xcodebuild archive \
@@ -25,10 +27,10 @@ xcodebuild archive \
   -scheme "$APP_NAME" \
   -configuration Release \
   -archivePath "build/$APP_NAME.xcarchive" \
-  -quiet \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO \
-  CODE_SIGN_IDENTITY=""
+  CODE_SIGN_IDENTITY="" \
+  | xcbeautify
 
 # An IPA is just a zip of Payload/<App>.app — no xcodebuild -exportArchive needed
 rm -rf dist

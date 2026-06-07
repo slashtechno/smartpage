@@ -81,7 +81,12 @@ export function UrlProvider({ children }: { children: React.ReactNode }) {
       setUrl(foundUrl);
     })();
   }, []);
-  if (!url) return <View className="centered-full"><ActivityIndicator /></View>; // loading state
+  if (!url)
+    return (
+      <View className="centered-full">
+        <ActivityIndicator />
+      </View>
+    ); // loading state
   return <UrlContext value={url}>{children}</UrlContext>;
 }
 

@@ -22,25 +22,25 @@ export default function RootLayout() {
         <ClientProvider>
           <VariableContextProvider value={themes[colorScheme]}>
             <EventDraftProvider>
-            <Stack
-              screenOptions={{
-                headerStyle: {
-                  backgroundColor: colors[colorScheme].background,
-                },
-                headerTitleStyle: {
-                  color: colors[colorScheme].foreground,
-                },
-                // https://docs.expo.dev/router/advanced/platform-specific-modules/#platform-module
-                // headerShadowVisible: Platform.OS === "web" ? false : true
-                headerShown: Platform.OS === "web" ? false : true,
-              }}
-            >
-              {/*<Stack.Screen name="(home)" options={{title: "hello"}} />*/}
-              <Stack.Screen
-                name="confirm"
-                options={{ title: "Confirm Event", presentation: "modal" }}
-              />
-            </Stack>
+              <Stack
+                screenOptions={{
+                  headerStyle: {
+                    backgroundColor: colors[colorScheme].background,
+                  },
+                  headerTitleStyle: {
+                    color: colors[colorScheme].foreground,
+                  },
+                  // https://docs.expo.dev/router/advanced/platform-specific-modules/#platform-module
+                  // headerShadowVisible: Platform.OS === "web" ? false : true
+                  headerShown: Platform.OS === "web" ? false : true,
+                }}
+              >
+                {/*<Stack.Screen name="(home)" options={{title: "hello"}} />*/}
+                <Stack.Screen
+                  name="confirm"
+                  options={{ title: "Confirm Event", presentation: "modal" }}
+                />
+              </Stack>
             </EventDraftProvider>
           </VariableContextProvider>
         </ClientProvider>

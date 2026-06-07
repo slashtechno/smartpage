@@ -9,7 +9,7 @@ type ProcessResponse = InferResponseType<
   200
 >;
 // The draft is just the eventDetails field from that response
-export type EventDraft = ProcessResponse["eventDetails"]
+export type EventDraft = ProcessResponse["eventDetails"];
 
 type EventDraftContextType = {
   eventDraft: EventDraft | null;
@@ -17,7 +17,6 @@ type EventDraftContextType = {
   setEventDraft: React.Dispatch<React.SetStateAction<EventDraft | null>>;
   imageUri: string | null;
   setImageUri: React.Dispatch<React.SetStateAction<string | null>>;
-
 };
 
 export const EventDraftContext = createContext<EventDraftContextType | null>(
@@ -32,7 +31,9 @@ export function EventDraftProvider({
   const [eventDraft, setEventDraft] = useState<EventDraft | null>(null);
   const [imageUri, setImageUri] = useState<string | null>(null);
   return (
-    <EventDraftContext value={{ eventDraft, setEventDraft, setImageUri, imageUri}}>
+    <EventDraftContext
+      value={{ eventDraft, setEventDraft, setImageUri, imageUri }}
+    >
       {children}
     </EventDraftContext>
   );

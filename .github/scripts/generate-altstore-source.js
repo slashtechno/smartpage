@@ -58,5 +58,5 @@ const source = {
 
 require("fs").writeFileSync(
   "/tmp/altstore-source.json",
-  JSON.stringify(source, null, 2) + "\n"
+  JSON.stringify(source, null, 2) + "\n",
 );

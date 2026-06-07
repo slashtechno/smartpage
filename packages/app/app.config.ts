@@ -2,14 +2,16 @@
 // Extends app.json with runtime env vars. The function form receives app.json
 // as `config` so we only need to override what changes — everything else inherits.
 
-import { ConfigContext, ExpoConfig } from 'expo/config';
+import { ConfigContext, ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
-  ...config as ExpoConfig,
+  ...(config as ExpoConfig),
   extra: {
     ...config.extra,
     // Comma-separated URLs tried in order — first reachable one wins.
     // Set BACKEND_URLS in .env (local) or GitHub Actions secrets (CI).
-    backendUrls: process.env.BACKEND_URLS?.split(',') ?? ['http://localhost:3000'],
+    backendUrls: process.env.BACKEND_URLS?.split(",") ?? [
+      "http://localhost:3000",
+    ],
   },
 });

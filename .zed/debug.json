@@ -13,6 +13,6 @@
     "program": "bun",
     "args": ["run", "--hot", "packages/api/src/index.ts"],
     "cwd": "${ZED_WORKTREE_ROOT}",
-    "skipFiles": ["<node_internals>/**"],
-  },
+    "skipFiles": ["<node_internals>/**"]
+  }
 ]

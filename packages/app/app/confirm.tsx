@@ -26,7 +26,10 @@ async function addToCalendar(
     title: name,
     startDate: new Date(starts_at),
     // Fall back to 1 hour after start if no end time provided
-    endDate: new Date(ends_at ?? new Date(starts_at).setHours(new Date(starts_at).getHours() + 1)),
+    endDate: new Date(
+      ends_at ??
+        new Date(starts_at).setHours(new Date(starts_at).getHours() + 1),
+    ),
     location: location ?? undefined,
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
@@ -36,7 +39,8 @@ async function addToCalendar(
 
 export default function ConfirmModal() {
   // ! asserts the context is non-null (safe because EventDraftProvider wraps the whole app)
-  const { eventDraft, setEventDraft, imageUri } = useContext(EventDraftContext)!;
+  const { eventDraft, setEventDraft, imageUri } =
+    useContext(EventDraftContext)!;
 
   if (!eventDraft) {
     return (
@@ -51,7 +55,9 @@ export default function ConfirmModal() {
   return (
     <View className="flex-1 p-6 gap-6">
       {/* Human-readable summary from the agent — capped to avoid dominating the screen */}
-      <Text className="text-gray-500" numberOfLines={3}>{eventDraft.user_facing_context}</Text>
+      <Text className="text-gray-500" numberOfLines={3}>
+        {eventDraft.user_facing_context}
+      </Text>
 
       <TextInput
         placeholder="Name"
@@ -90,13 +96,19 @@ export default function ConfirmModal() {
           );
           if (success) {
             setEventDraft(null); // clear the draft
-            router.back();       // dismiss the modal
+            router.back(); // dismiss the modal
           }
         }}
       >
         <Text className="text-white font-semibold">Add to Calendar</Text>
       </Pressable>
-      {imageUri && <Image source={{ uri: imageUri }} style={{ height: 200, borderRadius: 8 }} resizeMode="cover" />}
+      {imageUri && (
+        <Image
+          source={{ uri: imageUri }}
+          style={{ height: 200, borderRadius: 8 }}
+          resizeMode="cover"
+        />
+      )}
     </View>
   );
 }

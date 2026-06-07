@@ -22,7 +22,12 @@ export function DateField({
       {/* Tapping toggles the inline picker */}
       <Pressable
         onPress={() => setVisible((v) => !v)}
-        style={{ borderColor: theme.foreground, borderWidth: 1, borderRadius: 8, padding: 12 }}
+        style={{
+          borderColor: theme.foreground,
+          borderWidth: 1,
+          borderRadius: 8,
+          padding: 12,
+        }}
       >
         <Text style={{ color: theme.foreground }}>
           {new Date(value).toLocaleString()}

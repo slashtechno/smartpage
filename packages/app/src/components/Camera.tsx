@@ -39,15 +39,15 @@ const takePicture = async (
   });
   setLoading(false);
   if (!res.ok) return;
-  const eventData = await res.json()
+  const eventData = await res.json();
   console.log(`Event data: ${eventData}`);
-  setEventDraft(eventData.eventDetails)
-  router.push('/confirm')
+  setEventDraft(eventData.eventDetails);
+  router.push("/confirm");
 };
 
 export default function Camera() {
   const client = useContext(ClientContext);
-  const {setEventDraft, setImageUri} = useContext(EventDraftContext)!
+  const { setEventDraft, setImageUri } = useContext(EventDraftContext)!;
   const [isProcessing, setIsProcessing] = useState(false);
 
   ref = useRef<CameraView>(null);
@@ -92,14 +92,18 @@ export default function Camera() {
       flex: 1,
       alignItems: "center",
       paddingVertical: 15,
-      borderRadius: '10%',
-      backgroundColor: theme.background
+      borderRadius: "10%",
+      backgroundColor: theme.background,
     },
   });
 
   const [permission, requestPermission] = useCameraPermissions();
   if (!permission) {
-    return <View className="centered-full"><ActivityIndicator /></View>;
+    return (
+      <View className="centered-full">
+        <ActivityIndicator />
+      </View>
+    );
   }
 
   return (
@@ -115,7 +119,12 @@ export default function Camera() {
               <TouchableOpacity
                 style={styles.button}
                 onPress={async () => {
-                  takePicture(setImageUri, setEventDraft, setIsProcessing ,client!);
+                  takePicture(
+                    setImageUri,
+                    setEventDraft,
+                    setIsProcessing,
+                    client!,
+                  );
                 }}
               >
                 <Text style={styles.text}>Take picture</Text>
