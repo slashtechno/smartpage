@@ -19,7 +19,7 @@ import { router } from "expo-router";
 let ref: React.RefObject<CameraView | null>;
 
 const takePicture = async (
-  setUri: React.Dispatch<React.SetStateAction<string | null>>,
+  setImageUri: React.Dispatch<React.SetStateAction<string | null>>,
   setEventDraft: React.Dispatch<React.SetStateAction<EventDraft | null>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   client: ReturnType<typeof hc<AppType>>,
@@ -28,7 +28,7 @@ const takePicture = async (
   const photo = await ref.current?.takePictureAsync();
   if (!photo?.uri) return;
 
-  setUri(photo.uri);
+  setImageUri(photo.uri);
   const photoFetched = await fetch(photo.uri);
   const photoBlob = await photoFetched.blob();
   const res = await client.api.events.process.$post({
@@ -46,9 +46,8 @@ const takePicture = async (
 };
 
 export default function Camera() {
-  const [, setUri] = useState<string | null>(null);
   const client = useContext(ClientContext);
-  const {setEventDraft } = useContext(EventDraftContext)!
+  const {setEventDraft, setImageUri} = useContext(EventDraftContext)!
   const [isProcessing, setIsProcessing] = useState(false);
 
   ref = useRef<CameraView>(null);
@@ -100,7 +99,7 @@ export default function Camera() {
 
   const [permission, requestPermission] = useCameraPermissions();
   if (!permission) {
-    return <View />; // eventually change this to a loading spinner componnt
+    return <View className="centered-full"><ActivityIndicator /></View>;
   }
 
   return (
@@ -116,7 +115,7 @@ export default function Camera() {
               <TouchableOpacity
                 style={styles.button}
                 onPress={async () => {
-                  takePicture(setUri, setEventDraft, setIsProcessing ,client!);
+                  takePicture(setImageUri, setEventDraft, setIsProcessing ,client!);
                 }}
               >
                 <Text style={styles.text}>Take picture</Text>

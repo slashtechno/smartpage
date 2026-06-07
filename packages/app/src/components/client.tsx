@@ -3,7 +3,7 @@ import { hc } from "hono/client";
 import { fetch, FetchRequestInit, FetchRequestLike } from "expo/fetch";
 import Constants from "expo-constants";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { useAuth } from "@clerk/expo";
 
 // https://docs.expo.dev/versions/latest/config/app/#extra
@@ -81,7 +81,7 @@ export function UrlProvider({ children }: { children: React.ReactNode }) {
       setUrl(foundUrl);
     })();
   }, []);
-  if (!url) return <ActivityIndicator />; // loading state
+  if (!url) return <View className="centered-full"><ActivityIndicator /></View>; // loading state
   return <UrlContext value={url}>{children}</UrlContext>;
 }
 
