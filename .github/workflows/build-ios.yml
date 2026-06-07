@@ -50,44 +50,39 @@ jobs:
           key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
           restore-keys: pods-${{ runner.os }}-
 
-      # Install all workspace packages (app + api) at the monorepo root
       - name: Install dependencies
         run: bun install
+
+      # Must run before the build so APP_VERSION is available to app.config.ts
+      - name: Compute build metadata
+        id: meta
+        run: |
+          BASE=$(bun -e "process.stdout.write(require('./packages/app/app.json').expo.version.split('.').slice(0,2).join('.'))")
+          echo "app_version=${BASE}.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "date=$(date -u +%Y-%m-%d)" >> $GITHUB_OUTPUT
 
       - name: Build unsigned IPA
         working-directory: packages/app
         env:
           BACKEND_URLS: ${{ secrets.BACKEND_URLS }}
+          APP_VERSION: ${{ steps.meta.outputs.app_version }}
         run: sh build-sideload.sh
 
-      # Version: <expo.version>-<short sha>, e.g. 1.0.0-a3f2c1b
-      # Every push is a new version so SideStore always detects an update.
-      - name: Compute build metadata
-        id: meta
-        run: |
-          VERSION=$(bun -e "process.stdout.write(require('./packages/app/app.json').expo.version)")
-          SHA=$(git rev-parse --short HEAD)
-          echo "version=${VERSION}-${SHA}" >> $GITHUB_OUTPUT
-          echo "date=$(date -u +%Y-%m-%d)" >> $GITHUB_OUTPUT
-          echo "size=$(stat -f%z packages/app/dist/smartpage.ipa)" >> $GITHUB_OUTPUT
-
-      # Generate the source JSON from app.json — runs as a committed script so it's
-      # readable and testable, not buried in a YAML heredoc.
       - name: Generate AltStore source JSON from app.json
         env:
-          VERSION: ${{ steps.meta.outputs.version }}
+          VERSION: ${{ steps.meta.outputs.app_version }}
           BUILD_DATE: ${{ steps.meta.outputs.date }}
           IPA_SIZE: ${{ steps.meta.outputs.size }}
-        run: bun .github/scripts/generate-altstore-source.js
+        run: |
+          export IPA_SIZE=$(stat -f%z packages/app/dist/smartpage.ipa)
+          bun .github/scripts/generate-altstore-source.js
 
-      # Publish the IPA and source JSON as assets on the rolling release.
-      # softprops/action-gh-release@v2 creates the release if it doesn't exist,
-      # or overwrites existing assets if it does.
       - name: Publish rolling release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: rolling
-          name: Rolling Release (${{ steps.meta.outputs.version }})
+          name: Rolling Release (${{ steps.meta.outputs.sha }})
           prerelease: true
           make_latest: false
           body: "Auto-built from [`${{ github.sha }}`](https://github.com/slashtechno/smartpage/commit/${{ github.sha }}) · ${{ steps.meta.outputs.date }}"

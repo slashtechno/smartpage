@@ -6,6 +6,9 @@ import { ConfigContext, ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...(config as ExpoConfig),
+  // APP_VERSION is set by CI to <major.minor>.<run_number> so CFBundleShortVersionString
+  // increments on every build and SideStore detects updates. Falls back to app.json locally.
+  ...(process.env.APP_VERSION ? { version: process.env.APP_VERSION } : {}),
   extra: {
     ...config.extra,
     // Comma-separated URLs tried in order — first reachable one wins.
