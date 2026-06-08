@@ -1,7 +1,15 @@
 import { Stack } from "expo-router";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { homeTabs } from "@/src/tabs";
+import { useAuth } from "@clerk/expo";
+import { AuthView } from "@clerk/expo/native";
+
 export default function TabLayoutMobile() {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  if (!isLoaded) return null;
+  if (!isSignedIn) return <AuthView mode="signInOrUp" />;
+
   return (
     <>
       <NativeTabs>

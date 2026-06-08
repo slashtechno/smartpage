@@ -11,12 +11,14 @@ export const userMiddleware = createMiddleware<{
   };
 }>(async (c, next) => {
   const { userId: clerkId } = getAuth(c);
+  console.log(`clerk user id: ${clerkId}`)
   if (!clerkId) return c.json({ message: "Unauthorized" }, 401);
 
   // Try to get the user
   let [user] = await sql<DbUser[]>`
     SELECT * FROM users WHERE clerk_id = ${clerkId}
   `;
+  console.log(`user already in db: ${user}`)
 
   // Insert if doesn't exist
   // https://neon.com/postgresql/tutorial/upsert
@@ -29,7 +31,7 @@ export const userMiddleware = createMiddleware<{
       ON CONFLICT (clerk_id) DO UPDATE SET clerk_id = EXCLUDED.clerk_id
       RETURNING *
     `;
-  }.
+  }
   c.set("user", user);
   await next();
 });

@@ -45,11 +45,8 @@ export const eventsApp = new Hono()
       );
     }
   })
-  .post("/process", sValidator("form", eventProcessSchema), async (c) => {
-    const { userId } = getAuth(c);
-    if (!userId) {
-      return c.json({ message: "Unauthorized" }, 401);
-    }
+  .post("/process", userMiddleware, sValidator("form", eventProcessSchema), async (c) => {
+    const user = c.var.user
     const body = c.req.valid("form");
     const file = body.image;
     const fileArrayBuffer = await file.arrayBuffer();
