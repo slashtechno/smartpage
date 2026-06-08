@@ -32,8 +32,7 @@ const source = {
       name: expo.name,
       bundleIdentifier: expo.ios.bundleIdentifier,
       developerName: "slashtechno",
-      localizedDescription:
-        "Capture real-world event information with your camera and add them to your calendar.",
+      localizedDescription: "See it. Snap it. Scheduled.",
       iconURL: iconUrl,
       downloadURL: downloadUrl,
       versions: [
