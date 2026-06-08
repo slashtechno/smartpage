@@ -21,7 +21,7 @@ export const eventProcessSchema = z.object({
 export type DbEventInsert = z.infer<typeof DbEventInsertSchema>;
 
 export const DbEventSchema = DbEventInsertSchema.extend({
-  id: z.number(),
+  id: z.string().uuid(),
   created_at: z.date(),
 });
 

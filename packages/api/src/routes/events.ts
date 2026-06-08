@@ -7,22 +7,21 @@ import { eventProcessSchema, EventSafeCreateSchema } from "../types/events";
 import asciify from "asciify-image";
 import { getAuth } from "@clerk/hono";
 import { callAgent } from "../agent";
+import { userMiddleware } from "../middleware";
 
 // https://hono.dev/docs/api/request#json
 // To test:
 // curl -X POST http://localhost:3000/api/events -H "Content-Type: application/json" -d '{"name":"Test Event","starts_at":"2026-05-01T10:00:00Z","ends_at":"2026-05-01T11:00:00Z","location":"40.7128,-74.0060"}'
 export const eventsApp = new Hono()
-  .post("/", sValidator("json", EventSafeCreateSchema), async (c) => {
-    const { userId } = getAuth(c);
-    if (!userId) {
-      return c.json({ message: "Unauthorized" }, 401);
-    }
+  .post("/", userMiddleware, sValidator("json", EventSafeCreateSchema), async (c) => {
+  // .var and .get are basically the same, just dot notation and string keys respectively
 
+    const user = c.var.user
     const body = c.req.valid("json");
 
     // https://bun.com/docs/runtime/sql#error-classes
     try {
-      const createdEvent = await createEventInDb({ ...body, user_id: "test" });
+      const createdEvent = await createEventInDb({ ...body, user_id: user.id });
       return c.json(
         {
           createdEvent,
