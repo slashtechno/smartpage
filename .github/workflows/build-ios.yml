@@ -26,17 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # cache: true uses setup-bun's built-in caching of ~/.bun/install/cache, keyed on bun.lockb
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-
-      # Cache Bun's package download cache — keyed on bun.lock (text format, Bun 1.2+)
-      - name: Cache Bun packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: bun-${{ runner.os }}-
+          cache: true
 
       # CocoaPods downloads are slow — cache the local pod registry and downloaded sources.
       # Keyed on package.json (not Podfile.lock) because expo prebuild --clean regenerates
@@ -50,6 +44,40 @@ jobs:
             ~/.cocoapods
           key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
           restore-keys: pods-${{ runner.os }}-
+
+      # Cache extracted node_modules so bun install skips re-extraction on cache hit.
+      # Keyed on bun.lock (exact dependency versions); falls back to any prior node_modules.
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: node-modules-${{ runner.os }}-
+
+      # Cache Xcode's compiled object store. --clean regenerates project files but the compiled
+      # native modules (Hermes, Flipper, RCT*) are keyed on package.json + app.json — the same
+      # inputs that determine which native code gets compiled. Note: actions/cache does not
+      # preserve mtime, so Xcode won't do a fully incremental build, but module indexes,
+      # header maps, and previously-compiled pods are still reused.
+      - name: Cache Xcode DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: xcode-dd-${{ runner.os }}-${{ hashFiles('packages/app/package.json', 'packages/app/app.json') }}
+          restore-keys: xcode-dd-${{ runner.os }}-
+
+      # Cache the global Swift Package Manager download store. expo prebuild --clean regenerates
+      # Package.resolved on every run so we can't key on it — package.json is the proxy.
+      - name: Cache Swift Package Manager
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/org.swift.swiftpm
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
+          restore-keys: spm-${{ runner.os }}-
 
       - name: Install dependencies
         run: bun install
