@@ -20,7 +20,7 @@ let ref: React.RefObject<CameraView | null>;
 
 const takePicture = async (
   setImageUri: React.Dispatch<React.SetStateAction<string | null>>,
-  setEventDraft: React.Dispatch<React.SetStateAction<EventDraft | null>>,
+  setEventDrafts: React.Dispatch<React.SetStateAction<EventDraft[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   client: ReturnType<typeof hc<AppType>>,
 ) => {
@@ -40,14 +40,14 @@ const takePicture = async (
   setLoading(false);
   if (!res.ok) return;
   const eventData = await res.json();
-  console.log(`Event data: ${eventData}`);
-  setEventDraft(eventData.eventDetails);
+  console.log("Event data:", eventData)
+  setEventDrafts(eventData.eventDetails.events);
   router.push("/confirm");
 };
 
 export default function Camera() {
   const client = useContext(ClientContext);
-  const { setEventDraft, setImageUri } = useContext(EventDraftContext)!;
+  const { setEventDrafts, setImageUri } = useContext(EventDraftContext)!;
   const [isProcessing, setIsProcessing] = useState(false);
 
   ref = useRef<CameraView>(null);
@@ -121,7 +121,7 @@ export default function Camera() {
                 onPress={async () => {
                   takePicture(
                     setImageUri,
-                    setEventDraft,
+                    setEventDrafts,
                     setIsProcessing,
                     client!,
                   );

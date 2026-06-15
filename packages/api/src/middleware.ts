@@ -18,7 +18,7 @@ export const userMiddleware = createMiddleware<{
   let [user] = await sql<DbUser[]>`
     SELECT * FROM users WHERE clerk_id = ${clerkId}
   `;
-  console.log(`user already in db: ${user}`)
+  // console.log(`user already in db: ${JSON.stringify(user)}`)
 
   // Insert if doesn't exist
   // https://neon.com/postgresql/tutorial/upsert

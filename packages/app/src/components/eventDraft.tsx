@@ -8,13 +8,13 @@ type ProcessResponse = InferResponseType<
   ReturnType<typeof hc<AppType>>["api"]["events"]["process"]["$post"],
   200
 >;
-// The draft is just the eventDetails field from that response
-export type EventDraft = ProcessResponse["eventDetails"];
+// A single event from the array the agent returns
+export type EventDraft = ProcessResponse["eventDetails"]["events"][number];
 
 type EventDraftContextType = {
-  eventDraft: EventDraft | null;
-  // Dispatch<SetStateAction> accepts both a value and an updater function (prev => next)
-  setEventDraft: React.Dispatch<React.SetStateAction<EventDraft | null>>;
+  // Array of events extracted from the image
+  eventDrafts: EventDraft[];
+  setEventDrafts: React.Dispatch<React.SetStateAction<EventDraft[]>>;
   imageUri: string | null;
   setImageUri: React.Dispatch<React.SetStateAction<string | null>>;
 };
@@ -28,11 +28,11 @@ export function EventDraftProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [eventDraft, setEventDraft] = useState<EventDraft | null>(null);
+  const [eventDrafts, setEventDrafts] = useState<EventDraft[]>([]);
   const [imageUri, setImageUri] = useState<string | null>(null);
   return (
     <EventDraftContext
-      value={{ eventDraft, setEventDraft, setImageUri, imageUri }}
+      value={{ eventDrafts, setEventDrafts, setImageUri, imageUri }}
     >
       {children}
     </EventDraftContext>
