@@ -20,6 +20,7 @@
     "api": "workspace:*",
     "expo": "^55.0.24",
     "expo-auth-session": "~55.0.16",
+    "expo-build-properties": "~55.0.15",
     "expo-calendar": "~55.0.15",
     "expo-camera": "~55.0.18",
     "expo-constants": "~55.0.16",

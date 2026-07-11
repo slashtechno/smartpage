@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native";
-import { useAuth, useUser, useClerk, useUserProfileModal } from "@clerk/expo";
+import { useAuth, useUser, useClerk } from "@clerk/expo";
 import { AuthView, UserButton } from "@clerk/expo/native";
 
 export default function Profile() {
@@ -45,7 +45,6 @@ export default function Profile() {
   const { isSignedIn, isLoaded } = useAuth({ treatPendingAsSignedOut: false });
   const { user } = useUser();
   const { signOut } = useClerk();
-  const { presentUserProfile } = useUserProfileModal();
 
   if (!isLoaded) {
     return (
@@ -83,13 +82,7 @@ export default function Profile() {
       <Text style={{ color: theme.foreground }}>
         {user?.fullName ?? user?.id}
       </Text>
-      <TouchableOpacity style={styles.button} onPress={presentUserProfile}>
-        <Text style={styles.buttonText}>Manage Profile</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: theme.primary }]}
-        onPress={() => signOut()}
-      >
+      <TouchableOpacity style={styles.button} onPress={() => signOut()}>
         <Text style={styles.buttonText}>Sign Out</Text>
       </TouchableOpacity>
     </View>

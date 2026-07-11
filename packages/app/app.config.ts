@@ -9,6 +9,27 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   // APP_VERSION is set by CI to <major.minor>.<run_number> so CFBundleShortVersionString
   // increments on every build and SideStore detects updates. Falls back to app.json locally.
   ...(process.env.APP_VERSION ? { version: process.env.APP_VERSION } : {}),
+  plugins: [
+    ...(config.plugins ?? []),
+    // ponytail: AppCheckCore 11.3.x (released ~Jun 2026) is a Swift pod that
+    // requires GoogleUtilities & RecaptchaInterop to define modules (modular
+    // headers), which they don't — breaking Expo static CocoaPods `pod install`.
+    // AppCheckCore is a transitive dep: @clerk/expo -> GoogleSignIn -> AppCheckCore.
+    // Pinned to 11.2.0 (last working version) via expo-build-properties extraPods,
+    // which adds `pod 'AppCheckCore', '11.2.0'` to the generated Podfile and
+    // overrides the transitive `~> 11.0` from GoogleSignIn.
+    // Remove this pin when AppCheckCore ships a fix for the modular header
+    // requirement, or when GoogleUtilities/RecaptchaInterop add modular headers.
+    // Ref: https://github.com/react-native-google-signin/google-signin/issues/1517
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "extraPods": [{ "name": "AppCheckCore", "version": "11.2.0" }],
+        },
+      },
+    ],
+  ],
   extra: {
     ...config.extra,
     // Comma-separated URLs tried in order — first reachable one wins.
