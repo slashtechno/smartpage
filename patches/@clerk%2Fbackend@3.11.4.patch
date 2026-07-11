@@ -1,0 +1,15 @@
+diff --git a/package.json b/package.json
+index 40160777f7b879a4658aa6a45477420f276bec8c..07afa6167627d358d4303b8439dd41af2357681e 100644
+--- a/package.json
++++ b/package.json
+@@ -17,6 +17,10 @@
+       "edge-light": "./dist/runtime/browser/crypto.mjs",
+       "worker": "./dist/runtime/browser/crypto.mjs",
+       "browser": "./dist/runtime/browser/crypto.mjs",
++      "bun": {
++        "require": "./dist/runtime/node/crypto.js",
++        "import": "./dist/runtime/node/crypto.mjs"
++      },
+       "node": {
+         "require": "./dist/runtime/node/crypto.js",
+         "import": "./dist/runtime/node/crypto.mjs"

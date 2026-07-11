@@ -1,10 +1,9 @@
 import { Hono } from "hono";
 import { createEventInDb } from "../db";
-import { SQL } from "bun";
+import { NeonDbError } from "@neondatabase/serverless";
 import { sValidator } from "@hono/standard-validator";
 import * as z from "zod";
 import { eventProcessSchema, EventSafeCreateSchema } from "../types/events";
-import asciify from "asciify-image";
 import { getAuth } from "@clerk/hono";
 import { callAgent } from "../agent";
 import { userMiddleware } from "../middleware";
@@ -30,7 +29,7 @@ export const eventsApp = new Hono()
       );
     } catch (error) {
       console.log("error: ", error);
-      if (error instanceof SQL.PostgresError) {
+      if (error instanceof NeonDbError) {
         // PostgreSQL-specific error
         console.log(error.code); // PostgreSQL error code
         console.log(error.detail); // Detailed error message

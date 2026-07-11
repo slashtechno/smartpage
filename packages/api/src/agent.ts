@@ -81,8 +81,3 @@ export async function callAgent(
   });
   return output;
 }
-
-if (import.meta.main) {
-  const file = Bun.file("test-event.png");
-  console.log(await callAgent(await file.arrayBuffer(), "America/Chicago"));
-}

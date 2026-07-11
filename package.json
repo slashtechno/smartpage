@@ -8,7 +8,14 @@
     "dev:api": "bun run --filter api dev"
   },
   "private": true,
+  "dependencies": {
+    "hono": "^4.12.23"
+  },
   "overrides": {
-    "lightningcss": "1.30.1"
+    "lightningcss": "1.30.1",
+    "@clerk/backend": "3.11.4"
+  },
+  "patchedDependencies": {
+    "@clerk/backend@3.11.4": "patches/@clerk%2Fbackend@3.11.4.patch"
   }
 }

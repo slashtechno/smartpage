@@ -3,7 +3,7 @@
 import { createMiddleware } from "hono/factory";
 import { DbUser } from "./types/users";
 import { getAuth } from "@clerk/hono";
-import { sql } from "bun";
+import { sql } from "./db";
 
 export const userMiddleware = createMiddleware<{
   Variables: {
