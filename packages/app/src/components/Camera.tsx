@@ -158,7 +158,7 @@ export default function Camera() {
                   );
                 }}
               >
-                <Text style={styles.text}>Take picture</Text>
+                <Text style={styles.text}>Schedule it!</Text>
               </TouchableOpacity>
             )}
           </View>

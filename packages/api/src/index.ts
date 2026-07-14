@@ -23,6 +23,11 @@ const app = new Hono()
   .get("/", (c) => c.json("It's alive!", 218 as ContentfulStatusCode))
   .route("/api", apiApp);
 
+app.onError((err, c) => {
+     console.error("UNHANDLED", err);
+     return c.json({ error: "internal" }, 500);
+   });
+
 export default app;
 export type AppType = typeof app;
 
