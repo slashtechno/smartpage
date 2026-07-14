@@ -26,20 +26,51 @@ const takePicture = async (
 ) => {
   setLoading(true);
   const photo = await ref.current?.takePictureAsync();
-  if (!photo?.uri) return;
-
+  if (!photo?.uri) {
+    console.error("Failed to take picture");
+    setLoading(false);
+    return;
+  }
   setImageUri(photo.uri);
   const photoFetched = await fetch(photo.uri);
   const photoBlob = await photoFetched.blob();
-  const res = await client.api.events.process.$post({
+
+
+  // Initate upload
+  let initateUploadRes = await client.api.storage.$post({
+    json: {
+      imageFormat: photo.format,
+    },
+  })
+  if (!initateUploadRes.ok) {
+    console.error("Failed to initiate upload");
+    setLoading(false);
+    return;
+  }
+  const { presignedUrl, jwtToken } = await initateUploadRes.json();
+
+  // Upload to the presignedUrl
+  const uploadRes = await fetch(presignedUrl, {
+  method: 'PUT',
+  headers: { 'content-type': `image/${photo.format}`},
+  body: photoBlob,
+});
+  if (!uploadRes.ok) {
+    console.error("Failed to upload image to presigned URL");
+    setLoading(false);
+    return;
+  }
+
+
+  const processRes = await client.api.events.process.$post({
     form: {
-      image: photoBlob as any,
+      uploadJwt: jwtToken,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   });
   setLoading(false);
-  if (!res.ok) return;
-  const eventData = await res.json();
+  if (!processRes.ok) return;
+  const eventData = await processRes.json();
   console.log("Event data:", eventData)
   setEventDrafts(eventData.eventDetails.events);
   router.push("/confirm");

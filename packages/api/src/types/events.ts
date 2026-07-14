@@ -14,7 +14,7 @@ export const DbEventInsertSchema = EventSafeCreateSchema.extend({
 });
 
 export const eventProcessSchema = z.object({
-  image: z.instanceof(File),
+  uploadJwt: z.string(),
   timezone: zodTimezone(),
 });
 

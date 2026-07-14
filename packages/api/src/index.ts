@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { showRoutes } from "hono/dev";
 import { eventsApp } from "./routes/events";
+import { storageApp } from "./routes/storage";
 import { cors } from "hono/cors";
 import { clerkMiddleware } from "@clerk/hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
@@ -10,7 +11,8 @@ const apiApp = new Hono()
   .post("/", async (c) => {
     return c.json({ ok: true });
   })
-  .route("/events", eventsApp);
+  .route("/events", eventsApp)
+  .route("/storage", storageApp);
 
 // https://hono.dev/examples/grouping-routes-rpc
 // https://hono.dev/docs/api/routing#grouping

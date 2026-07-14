@@ -4,9 +4,11 @@ import { NeonDbError } from "@neondatabase/serverless";
 import { sValidator } from "@hono/standard-validator";
 import * as z from "zod";
 import { eventProcessSchema, EventSafeCreateSchema } from "../types/events";
-import { getAuth } from "@clerk/hono";
+import { verify } from "hono/jwt";
 import { callAgent } from "../agent";
-import { userMiddleware } from "../middleware";
+import { userMiddleware } from "../middleware";import { JWT_SECRET } from "../storage";
+import { UploadJwtPayload } from "../types/misc";
+import { del, get } from "@vercel/blob";
 
 // https://hono.dev/docs/api/request#json
 // To test:
@@ -47,8 +49,28 @@ export const eventsApp = new Hono()
   .post("/process", userMiddleware, sValidator("form", eventProcessSchema), async (c) => {
     const user = c.var.user
     const body = c.req.valid("form");
-    const file = body.image;
-    const fileArrayBuffer = await file.arrayBuffer();
+
+// Verify the jwt and get the uploadPath
+const {uploadPath, sub} = await verify(body.uploadJwt, JWT_SECRET, "HS256") as UploadJwtPayload;
+// Make sure the sub in the jwt matches the user making the request
+if (sub !== user.id) {
+  return c.json({ error: "Unauthorized" }, 403)
+}
+
+// Download the file from the uploadPath in blob storage
+// (should auto-load blob env vars)
+const result = await get(uploadPath, {access: 'private'});
+if (result?.statusCode !== 200) {
+  return c.json({ error: "Failed to download file from blob storage" }, 500)
+}
+  // Response is a class that needs `new` to be instantiated
+  // When the get() call was made, data started flowing.
+  // The ReadabelStream is the open connection to the blob storage
+  // Response's constructor stores the ReadableStream. in the instance, and when we call .arrayBuffer() on the instance, it reads the stream to completion and returns an ArrayBuffer.
+  const fileArrayBuffer = await new Response(result.stream).arrayBuffer();
+
+  // Delete the file from blob storage after downloading it
+  await del([uploadPath]);
 
     const agentResult = await callAgent(fileArrayBuffer, body.timezone);
     console.log(agentResult);
