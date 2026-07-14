@@ -12,8 +12,14 @@ APP_NAME=smartpage  # must match expo.name in app.json and the Xcode scheme
 
 echo "Building unsigned IPA for: $APP_NAME"
 
-# --clean wipes ios/ entirely and regenerates — ensures no stale pod paths or native config
-CI=1 bunx expo prebuild --platform ios --clean
+# --clean wipes ios/ entirely and regenerates — ensures no stale pod paths or native config,
+# but also busts the DerivedData/CocoaPods build caches in CI. Defaults to on (matches prior
+# behavior) when run locally; CI sets PREBUILD_CLEAN=false when native deps are unchanged.
+PREBUILD_FLAGS=""
+if [ "${PREBUILD_CLEAN:-true}" = "true" ]; then
+  PREBUILD_FLAGS="--clean"
+fi
+CI=1 bunx expo prebuild --platform ios $PREBUILD_FLAGS
 
 # Resolve Swift Package transitive dependencies (Nuke, PhoneNumberKit, etc.) before compiling
 xcodebuild -resolvePackageDependencies \

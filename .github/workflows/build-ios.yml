@@ -11,6 +11,11 @@ on:
     paths-ignore:
       - "**.md"
   workflow_dispatch:
+    inputs:
+      force_clean:
+        description: "Force expo prebuild --clean even if native deps look unchanged"
+        type: boolean
+        default: false
 
 # Cancel any in-progress run on the same branch when a new push arrives
 concurrency:
@@ -62,6 +67,7 @@ jobs:
       # preserve mtime, so Xcode won't do a fully incremental build, but module indexes,
       # header maps, and previously-compiled pods are still reused.
       - name: Cache Xcode DerivedData
+        id: xcode-dd-cache
         uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
@@ -91,12 +97,26 @@ jobs:
           echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "date=$(date -u +%Y-%m-%d)" >> $GITHUB_OUTPUT
 
+      # xcode-dd-cache's cache-hit is only true on an EXACT key match (not a restore-keys
+      # fallback) — since that key is hashFiles(package.json, app.json), an exact hit means
+      # those files are byte-identical to some previous run, so native deps haven't changed
+      # and prebuild doesn't need --clean. force_clean (workflow_dispatch) always overrides.
+      - name: Decide whether prebuild needs --clean
+        id: clean-check
+        run: |
+          if [ "${{ inputs.force_clean }}" = "true" ] || [ "${{ steps.xcode-dd-cache.outputs.cache-hit }}" != "true" ]; then
+            echo "clean=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "clean=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build unsigned IPA
         working-directory: packages/app
         env:
           BACKEND_URLS: ${{ secrets.BACKEND_URLS }}
           APP_VERSION: ${{ steps.meta.outputs.app_version }}
           EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          PREBUILD_CLEAN: ${{ steps.clean-check.outputs.clean }}
         run: sh build-sideload.sh
 
       - name: Generate AltStore source JSON from app.json
