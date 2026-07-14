@@ -20,7 +20,7 @@ export default function TabLayoutMobile() {
           </NativeTabs.Trigger>
         ))}
       </NativeTabs>
-      <Stack.Screen options={{ title: "Home" }} />
+      <Stack.Screen options={{ title: "Smartpage" }} />
     </>
   );
 }
