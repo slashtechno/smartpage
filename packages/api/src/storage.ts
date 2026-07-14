@@ -21,6 +21,7 @@ const { presignedUrl } = await presignUrl(token, {
   operation: 'put',
   access: 'private',
   pathname: path,
+  addRandomSuffix: false,
 });
 
 return { presignedUrl };
