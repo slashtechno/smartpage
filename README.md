@@ -1,7 +1,7 @@
 # smartpage
 See it. Snap it. Scheduled.
 
-NOTE: this app is still in development. The backend isn't deployed yet, so while you can install the app, it isn't actually usable
+NOTE: this app works, but was primarily a way for me to learn how to build mobile apps with Expo. You may encounter bugs, but issues + PRs are welcome.
 
 
 Take a photo of an event flyer and have it automatically added to your calendar.
