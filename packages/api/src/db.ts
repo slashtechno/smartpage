@@ -1,10 +1,12 @@
-import { neon } from "@neondatabase/serverless";
+// https://bun.com/docs/runtime/sql1
+import { sql } from "bun";
 import { DbEvent, DbEventInsert } from "./types/events";
 
-const connectionString = process.env.DATABASE_URL!;
-export const sql = neon(connectionString);
+export { sql };
 
-// https://neon.com/postgresql/tutorial/insert
+// Bun automatically loads .env and uses (TLS_)POSTGRES_URL (falls back to (TLS_)DATABASE_URL, PGURL, PG_URL)
+
+// https://bun.com/docs/runtime/sql#inserting-data & https://neon.com/postgresql/tutorial/insert
 export async function createEventInDb(
   eventData: DbEventInsert,
 ): Promise<DbEvent> {

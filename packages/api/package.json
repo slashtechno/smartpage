@@ -7,7 +7,6 @@
     "@clerk/backend": "^3.11.4",
     "@clerk/hono": "^0.1.33",
     "@hono/standard-validator": "^0.2.2",
-    "@neondatabase/serverless": "^1.1.0",
     "@vercel/blob": "^2.6.1",
     "ai": "^6.0.195",
     "dbmate": "^2.32.0",

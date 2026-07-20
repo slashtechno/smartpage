@@ -5,6 +5,8 @@ import { DbUser } from "./types/users";
 import { getAuth } from "@clerk/hono";
 import { sql } from "./db";
 
+const REQUESTS_PER_INTERVAL = 20;
+
 export const userMiddleware = createMiddleware<{
   Variables: {
     user: DbUser;
@@ -34,4 +36,45 @@ export const userMiddleware = createMiddleware<{
   }
   c.set("user", user);
   await next();
+});
+
+export const rateLimitMiddleware = createMiddleware<{
+  Variables: {
+    user: DbUser;
+    requestsMadeToday: number;
+    rateLimitLastReset: Date;
+  };
+}>(async (c, next) => {
+  const user= c.var.user;
+
+  // if reset time is < now - 24 hours, reset the count and reset time
+  const [{count, next_reset}] = await sql<{count: number, next_reset: Date}[]>`
+    UPDATE users SET
+      requests_made_in_window = CASE 
+      WHEN rate_limit_last_reset < (now() - interval '24 hours') THEN 1
+      ELSE requests_made_in_window + 1
+      END,
+      rate_limit_last_reset = CASE 
+      WHEN rate_limit_last_reset < (now() - interval '24 hours') THEN now()
+      ELSE rate_limit_last_reset
+      END
+    WHERE id = ${user.id}
+    RETURNING requests_made_in_window AS count, rate_limit_last_reset + interval '24 hours' AS next_reset
+  `;
+
+  if (count > REQUESTS_PER_INTERVAL) {
+    return c.json(
+      {
+        error: "Rate limit exceeded",
+        requestsMadeToday: count,
+        nextReset: next_reset,
+      },
+      429,
+    );
+  }
+
+  c.set("requestsMadeToday", count);
+  c.set("rateLimitLastReset", next_reset);
+  await next(); 
+
 });

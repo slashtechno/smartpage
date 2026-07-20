@@ -7,6 +7,7 @@ import {
   Platform,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState, useContext } from "react";
@@ -69,6 +70,15 @@ const takePicture = async (
     },
   });
   setLoading(false);
+
+  if (processRes.status === 429) {
+    const { nextReset } = await processRes.json();
+    Alert.alert(
+      "Rate limit exceeded",
+      `You've hit your daily limit. Try again after ${new Date(nextReset).toLocaleTimeString()}.`,
+    );
+    return;
+  }
   if (!processRes.ok) return;
   const eventData = await processRes.json();
   console.log("Event data:", eventData)

@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import { createEventInDb } from "../db";
-import { NeonDbError } from "@neondatabase/serverless";
+import { SQL } from "bun";
 import { sValidator } from "@hono/standard-validator";
 import * as z from "zod";
 import { eventProcessSchema, EventSafeCreateSchema } from "../types/events";
 import { verify } from "hono/jwt";
 import { callAgent } from "../agent";
-import { userMiddleware } from "../middleware";import { JWT_SECRET } from "../storage";
+import { rateLimitMiddleware, userMiddleware } from "../middleware";import { JWT_SECRET } from "../storage";
 import { UploadJwtPayload } from "../types/misc";
 import { del, get } from "@vercel/blob";
 
@@ -14,7 +14,7 @@ import { del, get } from "@vercel/blob";
 // To test:
 // curl -X POST http://localhost:3000/api/events -H "Content-Type: application/json" -d '{"name":"Test Event","starts_at":"2026-05-01T10:00:00Z","ends_at":"2026-05-01T11:00:00Z","location":"40.7128,-74.0060"}'
 export const eventsApp = new Hono()
-  .post("/", userMiddleware, sValidator("json", EventSafeCreateSchema), async (c) => {
+  .post("/", userMiddleware, rateLimitMiddleware, sValidator("json", EventSafeCreateSchema), async (c) => {
   // .var and .get are basically the same, just dot notation and string keys respectively
 
     const user = c.var.user
@@ -31,7 +31,7 @@ export const eventsApp = new Hono()
       );
     } catch (error) {
       console.log("error: ", error);
-      if (error instanceof NeonDbError) {
+      if (error instanceof SQL.PostgresError) {
         // PostgreSQL-specific error
         console.log(error.code); // PostgreSQL error code
         console.log(error.detail); // Detailed error message
@@ -46,7 +46,7 @@ export const eventsApp = new Hono()
       );
     }
   })
-  .post("/process", userMiddleware, sValidator("form", eventProcessSchema), async (c) => {
+  .post("/process", userMiddleware, rateLimitMiddleware, sValidator("form", eventProcessSchema), async (c) => {
     const user = c.var.user
     const body = c.req.valid("form");
 
