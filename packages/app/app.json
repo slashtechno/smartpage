@@ -70,6 +70,21 @@
         {
           "calendarPermission": "Allow $(PRODUCT_NAME) to add events to your calendar"
         }
+      ],
+      [
+        "expo-sharing",
+        {
+          "ios": {
+            "enabled": true,
+            "activationRule": {
+              "supportsImageWithMaxCount": 1
+            }
+          },
+          "android": {
+            "enabled": true,
+            "singleShareMimeTypes": ["image/*"]
+          }
+        }
       ]
     ],
     "experiments": {
