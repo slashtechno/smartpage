@@ -11,6 +11,16 @@ Other features:
 * Repeating events
 * Ability to select which calendar to add events to
 
+Stack:
+* Expo (TypeScript, Expo Router)  
+* Hono (integrated with Hono RPC)  
+* Postgres  
+* Vercel Blob  
+    - Images are stored in Vercel Blob so images can get from the app to the server without sending potentially large images to a serverless function  
+* Vercel AI Gateway  
+    - AI Gateway provides $5/mo of free AI inference if you haven't yet added credit  
+* Clerk for auth
+
 This app isn't on the App Store yet. Click below to add it to an alternative iOS App Store to install it. If you don't yet have one, check out SideStore.
 <!--Alternatively, download the .ipa from the [rolling release](https://github.com/slashtechno/smartpage/releases/rolling) and sideload it using a Mac.-->
 
