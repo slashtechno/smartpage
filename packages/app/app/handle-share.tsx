@@ -10,7 +10,7 @@ import { ClientContext } from "@/src/components/client";
 export default function ShareReceived() {
   const { resolvedSharedPayloads, isResolving } = useIncomingShare();
   let theme = useTheme();
-  const { setEventDrafts } = useContext(EventDraftContext)!;
+  const { setEventDrafts, setImageUri } = useContext(EventDraftContext)!;
   const client = useContext(ClientContext);
   const [isLoading, setLoading] = useState(false);
 
@@ -20,6 +20,7 @@ export default function ShareReceived() {
       console.log("resolvedSharedPayloads", resolvedSharedPayloads);
       if (resolvedSharedPayloads.length === 1 && !isResolving) {
         setLoading(true);
+        setImageUri(resolvedSharedPayloads[0].contentUri);
         await sendPicture(
           resolvedSharedPayloads[0].contentUri!,
           resolvedSharedPayloads[0].mimeType === "image/png" ? "png" : "jpg",
