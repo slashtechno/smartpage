@@ -17,7 +17,7 @@ export default function ShareReceived() {
   //   https://react.dev/learn/synchronizing-with-effects#step-2-specify-the-effect-dependencies
   useEffect(() => {
     (async () => {
-      console.log("resolvedSharedPayloads", resolvedSharedPayloads);
+      // console.log("resolvedSharedPayloads", resolvedSharedPayloads);
       if (resolvedSharedPayloads.length === 1 && !isResolving) {
         setLoading(true);
         setImageUri(resolvedSharedPayloads[0].contentUri);

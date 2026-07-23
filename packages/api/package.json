@@ -16,5 +16,11 @@
   "devDependencies": {
     "@types/bun": "latest"
   },
+  "overrides": {
+    "@clerk/backend": "3.11.4"
+  },
+  "patchedDependencies": {
+    "@clerk/backend@3.11.4": "patches/@clerk%2Fbackend@3.11.4.patch"
+  },
   "main": "./src/index.ts"
 }

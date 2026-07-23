@@ -32,6 +32,7 @@ function nextOccurrenceOfDay(from: Date, targetDay: number): Date {
 }
 
 async function addAllToCalendar(drafts: EventDraft[]) {
+  // web: https://calendar.google.com/calendar/r/settings/export
   // Ask for permission to access the device calendar
   const { status } = await Calendar.requestCalendarPermissions();
   if (status !== "granted") {

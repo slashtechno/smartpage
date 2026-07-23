@@ -12,6 +12,7 @@ import {
   Modal,
   Alert,
   ScrollView,
+  Platform,
 } from "react-native";
 import { useAuth, useUser, useClerk } from "@clerk/expo";
 import { AuthView, UserButton, UserProfileView } from "@clerk/expo/native";
@@ -62,6 +63,7 @@ export default function Profile() {
   const [storedCalendarId, setStoredCalendarId] = useState<string | null>(null);
   const settingsStorage = createAsyncStorage("settings");
 
+  if (Platform.OS !== "web") {
   // https://docs.expo.dev/versions/v57.0.0/sdk/calendar/#usage
   useEffect(() => {
     (async () => {
@@ -94,6 +96,7 @@ export default function Profile() {
       }
     })();
   }, []);
+}
 
   if (!isLoaded) {
     return (

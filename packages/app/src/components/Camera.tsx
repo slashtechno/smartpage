@@ -56,6 +56,7 @@ export default function Camera() {
     message: {
       textAlign: "center",
       paddingBottom: 10,
+      color: theme.foreground,
     },
 
     cameraContainer: {

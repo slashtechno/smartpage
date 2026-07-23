@@ -1,6 +1,5 @@
 {
   "bunVersion": "1.x",
-  "installCommand": "bun install --filter './packages/api'",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index" },
     { "source": "/", "destination": "/api/index" }
