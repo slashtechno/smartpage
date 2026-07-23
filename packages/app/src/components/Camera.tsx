@@ -1,4 +1,4 @@
-import { useTheme } from "@/src/theme";
+import { borderRadius, useTheme } from "@/src/theme";
 import {
   Text,
   View,
@@ -69,7 +69,7 @@ export default function Camera() {
       // controls itself within parent
       alignSelf: "center",
 
-      borderRadius: "5%",
+      borderRadius: borderRadius,
     },
     cameraView: {
       width: "100%",
@@ -87,7 +87,7 @@ export default function Camera() {
       flex: 1,
       alignItems: "center",
       paddingVertical: 15,
-      borderRadius: "10%",
+      borderRadius: borderRadius,
       backgroundColor: theme.background,
     },
   });

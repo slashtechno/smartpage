@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Text, Pressable, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { colors } from "@/src/theme";
+import { borderRadius, colors } from "@/src/theme";
 
 // iOS modal sheets always render with a light background regardless of system dark mode,
 // so we hardcode light theme colors here rather than reading from useColorScheme()
@@ -25,7 +25,7 @@ export function DateField({
         style={{
           borderColor: theme.foreground,
           borderWidth: 1,
-          borderRadius: 8,
+          borderRadius: borderRadius,
           padding: 12,
         }}
       >

@@ -1,5 +1,5 @@
 import { sendPicture } from "@/src/process";
-import { useTheme } from "@/src/theme";
+import { borderRadius, useTheme } from "@/src/theme";
 import { Link, router, Stack } from "expo-router";
 import { useIncomingShare } from "expo-sharing";
 import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
@@ -76,13 +76,14 @@ export default function ShareReceived() {
             <ActivityIndicator />
           </>
         ) : (
+        // This should never be reached since the user should automatically be redirected to /confirm (or /)
         <Link
           href="/"
           style={{
             color: theme.foreground,
             padding: 10,
             backgroundColor: theme.primary,
-            borderRadius: 5,
+            borderRadius: borderRadius,
           }}
         >
           Go home

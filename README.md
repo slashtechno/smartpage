@@ -9,6 +9,7 @@ Take a photo of an event flyer and have it automatically added to your calendar.
 Other features:
 * Share images to analyze from other apps (including from Screenshot Markup)
 * Repeating events
+* Ability to select which calendar to add events to
 
 This app isn't on the App Store yet. Click below to add it to an alternative iOS App Store to install it. If you don't yet have one, check out SideStore.
 <!--Alternatively, download the .ipa from the [rolling release](https://github.com/slashtechno/smartpage/releases/rolling) and sideload it using a Mac.-->

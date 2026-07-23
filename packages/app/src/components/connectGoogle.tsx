@@ -2,7 +2,7 @@ import { useUser } from "@clerk/expo";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
-import { useTheme } from "@/src/theme";
+import { borderRadius, useTheme } from "@/src/theme";
 
 export function ConnectGoogle() {
   const theme = useTheme();
@@ -36,7 +36,7 @@ export function ConnectGoogle() {
     button: {
       backgroundColor: theme.primary,
       padding: 16,
-      borderRadius: 12,
+      borderRadius: borderRadius,
       alignItems: "center",
       justifyContent: "center",
     },

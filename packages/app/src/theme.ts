@@ -23,3 +23,5 @@ export function useTheme() {
   const scheme = useColorScheme();
   return colors[scheme === "dark" ? "dark" : "light"];
 }
+
+export const borderRadius = 12;
