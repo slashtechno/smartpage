@@ -34,6 +34,10 @@ const source = {
       developerName: "slashtechno",
       localizedDescription: "See it. Snap it. Scheduled.",
       iconURL: iconUrl,
+      screenshotURLs: [
+        "https://raw.githubusercontent.com/slashtechno/smartpage/main/docs/main.PNG",
+        "https://raw.githubusercontent.com/slashtechno/smartpage/main/docs/confirm_event.PNG",
+      ],
       downloadURL: downloadUrl,
       versions: [
         {

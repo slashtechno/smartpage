@@ -29,6 +29,10 @@ This app isn't on the App Store yet. Click below to add it to an alternative iOS
 <a href="https://github.com/slashtechno/smartpage/releases/download/rolling/smartpage.ipa"><img src="https://github.com/StikStore/altdirect/blob/main/assets/png/Download_Blue.png?raw=true" width="200"></a>
 </h1>
 
+<p align="left">
+<img src="docs/main.PNG" width="250">
+<img src="docs/confirm_event.PNG" width="250">
+</p>
 
 ## Running locally
 1. Clone the repo, `cd` into it
